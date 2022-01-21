@@ -4,10 +4,14 @@ Simple TCP connection for server command execution
 
 ## Installation
 
-Download Binary File
+Download `.zip` or `.tar.gz` file, you can see all release on [this link](https://github.com/panelssh/tcp-socket/releases)
+
+Example download with curl on Linux:
 
 ```bash
-curl -LJ https://github.com/panelssh/tcp-socket/releases/download/v1.0.0/panelssh-tcp-socket-v1.0.0-linux-amd64.tar.gz | tar -xz
+VERSION=v1.0.1
+KERNEL=amd64
+curl -LJ https://github.com/panelssh/tcp-socket/releases/download/${VERSION}/panelssh-tcp-socket-${VERSION}-linux-${KERNEL}.tar.gz | tar -xz
 ```
 
 ## Usage
