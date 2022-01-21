@@ -58,6 +58,11 @@ func main() {
 	SecretKey := getEnv("SECRET_KEY", "test")
 	AllowedAddress := getEnv("ALLOWED_ADDRESS", "%")
 
+	if SecretKey == "" {
+		fmt.Println("You must provide secret key")
+		return
+	}
+
 	address := host + ":" + Port
 	listen, err := net.Listen("tcp", address)
 	if err != nil {
@@ -68,10 +73,7 @@ func main() {
 	fmt.Printf("[*] Listening on %s\n", listen.Addr())
 
 	for {
-		response := Response{}
-		response.Success = false
-		response.Message = "Ok"
-		response.Output = ""
+		response := Response{Success: false, Message: "OK", Output: ""}
 
 		conn, err := listen.Accept()
 		if err != nil {
