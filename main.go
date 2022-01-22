@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net"
 	"os"
@@ -53,17 +54,24 @@ func sendResponse(conn net.Conn, response Response) {
 }
 
 func main() {
-	host := getEnv("HOST", "0.0.0.0")
-	Port := getEnv("PORT", "3000")
-	SecretKey := getEnv("SECRET_KEY", "test")
-	AllowedAddress := getEnv("ALLOWED_ADDRESS", "%")
+	defaultHost := getEnv("HOST", "0.0.0.0")
+	defaultPort := getEnv("PORT", "3000")
+	defaultSecretKey := getEnv("SECRET_KEY", "test")
+	defaultAllowedAddress := getEnv("ALLOWED_ADDRESS", "%")
 
-	if SecretKey == "" {
+	Host := flag.String("host", defaultHost, "Bind Host/IP Address")
+	Port := flag.String("port", defaultPort, "Listening Port")
+	SecretKey := flag.String("secret-key", defaultSecretKey, "Secret Key")
+	AllowedAddress := flag.String("allowed-address", defaultAllowedAddress, "List Allowed IP Address")
+
+	flag.Parse()
+
+	if *SecretKey == "" {
 		fmt.Println("You must provide secret key")
 		return
 	}
 
-	address := host + ":" + Port
+	address := *Host + ":" + *Port
 	listen, err := net.Listen("tcp", address)
 	if err != nil {
 		fmt.Println(err)
@@ -82,9 +90,9 @@ func main() {
 			continue
 		}
 
-		if AllowedAddress != "%" {
-			AllowedAddresses := strings.Split(AllowedAddress, ",")
-			remoteAddress := strings.Split(conn.RemoteAddr().String(), ":")
+		remoteAddress := strings.Split(conn.RemoteAddr().String(), ":")
+		if *AllowedAddress != "%" {
+			AllowedAddresses := strings.Split(*AllowedAddress, ",")
 			if !stringInSlice(remoteAddress[0], AllowedAddresses) {
 				response.Message = "Request Not Allowed"
 				sendResponse(conn, response)
@@ -132,7 +140,7 @@ func main() {
 			continue
 		}
 
-		if request.SecretKey != SecretKey {
+		if request.SecretKey != *SecretKey {
 			response.Message = "Invalid Secret Key"
 			sendResponse(conn, response)
 			continue
