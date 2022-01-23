@@ -12,6 +12,7 @@
 . /lib/lsb/init-functions
 
 # Change this according to your setup!
+DAEMON_PATH="/usr/bin"
 DAEMON="panelssh-tcp-socket"
 RUNAS="root"
 HOST="0.0.0.0"
@@ -29,7 +30,7 @@ test -x "$DAEMON_PATH/$DAEMON" || exit 5
 case $1 in
 	start)
 		log_daemon_msg "Starting $DESC"
-		start-stop-daemon --start --background --pidfile "$PID_FILE" --make-pidfile --chuid "$RUNAS" -d /usr/bin --exec "$DAEMON" -- $FLAGS
+		start-stop-daemon --start --background --pidfile "$PID_FILE" --make-pidfile --chuid "$RUNAS" -d "$DAEMON_PATH" --exec "$DAEMON" -- $FLAGS
 
 		if [ $? -ne 0 ]; then
 			log_end_msg 1
