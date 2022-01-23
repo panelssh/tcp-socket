@@ -1,0 +1,17 @@
+[Unit]
+Description=TCP Socket
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/
+User=root
+ExecStart=/usr/bin/panelssh-tcp-socket -host="0.0.0.0" -port="3000" -secret-key="test" -allowed-address="%"
+ExecReload=/bin/kill -HUP $MAINPID
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=tcp-socket
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,72 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          tcp-socket
+# Required-Start:    $remote_fs $network
+# Required-Stop:     $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: TCP Socket
+# Description:       Transmission Control Protocol (TCP) Socket
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+# Change this according to your setup!
+DAEMON="panelssh-tcp-socket"
+RUNAS="root"
+HOST="0.0.0.0"
+PORT="3000"
+SECRET_KEY="test"
+ALLOWED_ADDRESS="%"
+FLAGS="-host=\"$HOST\" -port=\"$PORT\" -secret-key=\"$SECRET_KEY\" -allowed-address=\"$ALLOWED_ADDRESS\""
+
+DESC="TCP Socket"
+
+PID_FILE=/var/run/tcp-socket.pid
+
+test -x "$DAEMON_PATH/$DAEMON" || exit 5
+
+case $1 in
+	start)
+		log_daemon_msg "Starting $DESC"
+		start-stop-daemon --start --background --pidfile "$PID_FILE" --make-pidfile --chuid "$RUNAS" -d /usr/bin --exec "$DAEMON" -- $FLAGS
+
+		if [ $? -ne 0 ]; then
+			log_end_msg 1
+		else
+			log_end_msg 0
+		fi
+		;;
+	stop)
+		log_daemon_msg "Stopping $DESC"
+		start-stop-daemon --stop --pidfile "$PID_FILE" --retry 5
+
+		if [ $? -ne 0 ]; then
+			log_end_msg 1
+		else
+			log_end_msg 0
+		fi
+		;;
+	restart)
+		$0 stop
+		sleep 1
+		$0 start
+		;;
+	status)
+		status_of_proc -p "$PID_FILE" "$DAEMON" "tcp-socket" && exit 0 || exit $?
+		;;
+	reload)
+		log_daemon_msg "Reloading $DESC"
+		start-stop-daemon --stop --signal HUP --pidfile "$PID_FILE"
+
+		if [ $? -ne 0 ]; then
+			log_end_msg 1
+		else
+			log_end_msg 0
+		fi
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|reload|status}"
+		exit 2
+		;;
+esac
