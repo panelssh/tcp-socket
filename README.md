@@ -86,7 +86,7 @@ update-rc.d tcp-socket defaults
 #### Arch Linux and other systemd based systems
 
 ```bash
-curl -o /etc/systemd/system/tcp-socket.service https://raw.githubusercontent.com/panelssh/tcp-socket/main/scripts/tcp-socket.initd \
+curl -o /etc/systemd/system/tcp-socket.service https://raw.githubusercontent.com/panelssh/tcp-socket/main/scripts/tcp-socket.service \
   && chmod +x /etc/systemd/system/tcp-socket.service
 ```
 
