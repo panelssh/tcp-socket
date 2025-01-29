@@ -46,4 +46,3 @@ jobs:
           md5sum: true
           sha256sum: true
           compress_assets: true # Compress binaries
-          build_flags: "-trimpath -ldflags=\"-s -w\"" # Smaller binaries
